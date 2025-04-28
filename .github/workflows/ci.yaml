@@ -21,8 +21,8 @@ jobs:
 
       - name: install ssh key
         uses: webfactory/ssh-agent@v0.9.0
-          with:
-            ssh-private-key: ${{ secrets.ORAVM_SERVER_PRIVATE_KEY }}
+        with:
+          ssh-private-key: ${{ secrets.ORAVM_SERVER_PRIVATE_KEY }}
 
       - name: create known_hosts
         run: |
