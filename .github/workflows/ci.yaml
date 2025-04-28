@@ -33,5 +33,5 @@ jobs:
         run: |
           echo "Copying Files ..."
           ls -l target/
-          scp target/itp-ci-quarkus-1.0.0-runner.jar ${{ secret.ORAVM_SERVER_USER }}@${{
+          scp target/itp-ci-quarkus-1.0.0-runner.jar ${{ secrets.ORAVM_SERVER_USER }}@${{
             secrets.ORAVM_SERVER }}
