@@ -1,0 +1,37 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '21'
+
+      - name: Build
+        run: ./mvnw clean package -Dquarkus.package.type=uber-jar -B
+
+      - name: install ssh key
+        uses: webfactory/ssh-agent@v0.9.0
+          with:
+              ssh-private-key: ${{ secrets.ORAVM_SERVER_PRIVATE_KEY }}
+
+      - name: create known_hosts
+        run: |
+          ssh-keyscan -H -t rsa ${{ secrets.ORAVM_SERVER }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H -t ed25519 ${{ secrets.ORAVM_SERVER }} >> ~/.ssh/known_hosts
+
+      - name: copy binaries to oravm
+        run: |
+          echo "Copying Files ..."
+          ls -l target/
+          scp target/itp-ci-quarkus-1.0.0-runner.jar ${{ secret.ORAVM_SERVER_USER }}@${{
+            secrets.ORAVM_SERVER }}
